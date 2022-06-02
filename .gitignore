@@ -1,0 +1,11 @@
+.idea/
+.vscode/
+venv/
+**.pyc
+**.csv
+**.pickle
+**.jpg
+**.png
+**.jpeg
+**.info
+
