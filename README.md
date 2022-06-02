@@ -1,5 +1,4 @@
 # Spaces
-Python portion of GRASP control
 
 ### Installation
 
