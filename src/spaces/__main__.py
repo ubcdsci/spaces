@@ -1,7 +1,10 @@
 import datetime
+from typing import List
+import os
 import tweepy as tw
 
 from src.spaces.analysis.example_analyzer import ExampleAnalyzer
+from src.spaces.data.activity import RegionActivity
 from src.spaces.data.query import RegionQuery
 from src.spaces.data.region import Region
 from src.spaces.data.region_type import RegionType
@@ -14,6 +17,7 @@ parser = RegionParser()
 
 # parks = ["balaclava park", "camosun", "chaldecott park", "deering island park", "memorial west park", "musqueam park",
 #          "pacific spirit park", "park site on blenheim", "quadra west park", "valdez park"]
+
 
 regions = [
     # Placeholder values for lat/long
@@ -40,7 +44,7 @@ end_date = datetime.datetime.now()
 
 analyzer = ExampleAnalyzer()
 
-results = []
+results: List[RegionActivity] = []
 
 for region in regions:
 
