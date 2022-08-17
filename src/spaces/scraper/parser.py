@@ -1,7 +1,9 @@
+from typing import List
+
 import tweepy as tw
 
 from src.spaces.data.query import RegionQuery
-from src.spaces.data.result import RegionQueryResult
+from src.spaces.data.result import RegionQueryResult, Tweet
 
 
 class RegionParser:
@@ -10,9 +12,12 @@ class RegionParser:
         pass
 
     def parse(self, query: RegionQuery, tweets: tw.Cursor) -> RegionQueryResult:
-        # Parsing method TBD
+        out_tweets = []
+        for tweet in tweets:
+            out_tweets.append(Tweet.from_tweepy(tweet))
         return RegionQueryResult(
             query=query,
-            tweets=tweets
+            tweets=[tweets]
         )
+
 

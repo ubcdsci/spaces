@@ -1,5 +1,8 @@
 import random
 
+import pandas as pd
+import tweepy as tw
+
 from src.spaces.analysis.analyzer import TweetAnalyzer
 from src.spaces.data.activity import RegionActivity
 from src.spaces.data.result import RegionQueryResult
