@@ -12,6 +12,7 @@ from src.spaces.data.query import RegionQuery
 from src.spaces.data.region import Region
 from src.spaces.data.region_type import RegionType
 from src.spaces.data.result import RegionQueryResult
+from src.spaces.data.tweet import Tweet
 from src.spaces.scraper.parser import RegionParser
 from src.spaces.scraper.scraper import RegionScraper
 import pickle
@@ -52,20 +53,20 @@ results: List[RegionActivity] = []
 # print(results)
 # print(analyzer.train(parsed_dtst_tweets))
 
-stored_result_list = ['Aulavik', 'Auyuittuq', 'Balaclava Park', 'Bruce Peninsula', 'Cape Breton Highlands', 'Elk Island',
+stored_result_list_0 = ['Aulavik', 'Auyuittuq', 'Balaclava Park', 'Bruce Peninsula', 'Cape Breton Highlands', 'Elk Island',
              'Forillon', 'Fundy', 'Georgian Bay Islands', 'Galiano Island', 'Gibsons', 'Gros Morne', 'Gulf Islands',
              'Gwaii Haanas', 'Ivvavik', 'Jelounaifa', 'Kelowna', 'Kluane']
 stored_result_list_1 = ['Kootenay']
 stored_result_list_2 = ['Kamloops']
 stored_result_list_3 = ['La Mauricie','Lake Huron', 'Lake Louise', 'Lake Superior', 'Mingan Archipelago', 'Mont-Tremblant',
              'Mount Logan', 'Mount Revelstoke']
-stored_result_list_4  = ['Moraine Lake', "Nairn Falls", 'Nahanni', 'Niagara Falls']
+stored_result_list_4 = ['Moraine Lake', "Nairn Falls", 'Nahanni', 'Niagara Falls']
 stored_result_list_5 = ['Pacific Rim', 'Point Pelee', 'Prince Albert', 'Prince Edward Island', 'Porteau Cove', 'Qualicum Beach',
              'Riding Mountain', 'Sable Island', 'Sirmilik']
 stored_result_list_6 = ['Terra Nova', 'Thousand Islands', 'Torngat Mountains',
              'Tofino', 'Union Bay', 'Vuntut']
-name_list = ['White Lake', 'Waterton Lakes', 'Whistler Blackcomb',
-             'Wood Buffalo', 'Yoho']
+name_list = ['White Lake', 'Waterton Lakes', 'Whistler Blackcomb','Wood Buffalo', 'Yoho']
+
 
 region_fake = []
 for name in name_list:
@@ -83,6 +84,7 @@ merged_result = RegionQueryResult(
     tweets=[])
 
 for index, region in enumerate(region_fake):
+    out_list = []
     print(region)
     date_offset = datetime.timedelta(weeks=index+47)
     query_fake = RegionQuery(
@@ -93,8 +95,11 @@ for index, region in enumerate(region_fake):
     fake_tweets = scraper.compile_tweets(query_fake)
     for tweet in fake_tweets:
         tweet.created_at -= date_offset
-    fake_parsed_tweets: RegionQueryResult = parser.parse(query_fake, fake_tweets)
+        out_list.append(Tweet.from_tweepy(tweet))
+    fake_parsed_tweets: RegionQueryResult= parser.parse(query_fake, out_list)
+    # print(fake_parsed_tweets)
     merged_result.tweets += fake_parsed_tweets.tweets
+
 #
 # saving into pickle file
 file_to_store = open("../stored_results_7.pickle", "wb")

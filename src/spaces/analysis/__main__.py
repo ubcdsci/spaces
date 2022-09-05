@@ -19,6 +19,7 @@ import pickle
 analyzer = ExampleAnalyzer()
 
 # reading from pickle file
+
 for index in range(0, 8):
     if index == 0:
         first_file = open("../stored_results_0.pickle", "rb")
@@ -29,8 +30,9 @@ for index in range(0, 8):
         loaded_result = pickle.load(file_to_read)
         final_results.tweets += loaded_result.tweets
         file_to_read.close()
-
-analyzer.train(final_results)
-
-print(len(final_results.tweets))
+norm_mu, norm_std = analyzer.train(final_results)
+print(norm_mu, norm_std)
+x = 600
+analyzed_prob = analyzer.analyze(x, norm_mu, norm_std, final_results)
+print(analyzed_prob)
 
