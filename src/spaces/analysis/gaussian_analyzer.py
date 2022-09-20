@@ -20,6 +20,8 @@ class ExampleAnalyzer(TweetAnalyzer):
         # Histogram of activity
         self._activity_hist = ...
         self._dtst = None
+        self._mu = 0
+        self._std = 1
 
     # Create the dataset / parse tweets into a histogram
     def train(self, train_result: RegionQueryResult):
@@ -40,19 +42,21 @@ class ExampleAnalyzer(TweetAnalyzer):
             year_list[days_apart].append(item)
 
         # fit list into normal distribution
-        mu, std = norm.fit([len(x) for x in year_list])
-        return mu, std
+        self._mu, self._std = norm.fit([len(x) for x in year_list])
 
         # Convert these counts to a histogram
         days_array = np.array(all_days)
-        hist = np.histogram(days_array, bins=365)
-        hist_display = plt.hist(days_array, bins = 100)
-        plt.show()
+        return days_array
+        # t= np.linspace(-1500, 2000, 150)
+        # return plt.plot(t, norm.pdf(t, mu, std))
+        # plt.show()
+        # hist = np.histogram(days_array, bins=365)
+        # plt.hist(year_list, bins=50, density=True, alpha=0.5)
         # ...
 
-    def analyze(self, x, mu, std, result: RegionQueryResult):
-        probability = norm.pdf(x, mu, std)
-        return probability
+    def analyze(self, result: RegionQueryResult):
+        probability = norm.cdf(len(result.tweets), self._mu, self._std)
+        return probability > 0.9
         # Compare to self.activity_hist
         # return RegionActivity(
         #     query=result.query,

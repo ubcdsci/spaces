@@ -6,7 +6,7 @@ from typing import List
 import os
 import tweepy as tw
 
-from src.spaces.analysis.example_analyzer import ExampleAnalyzer
+from src.spaces.analysis.gaussian_analyzer import ExampleAnalyzer
 from src.spaces.data.activity import RegionActivity
 from src.spaces.data.query import RegionQuery
 from src.spaces.data.region import Region

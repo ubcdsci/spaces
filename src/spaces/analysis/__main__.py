@@ -4,9 +4,14 @@ import string
 from typing import List
 
 import os
-import tweepy as tw
 
-from src.spaces.analysis.example_analyzer import ExampleAnalyzer
+import numpy as np
+import tweepy as tw
+from matplotlib import pyplot as plt
+from scipy.stats import norm
+
+from src.spaces.analysis.gaussian_analyzer import ExampleAnalyzer
+from src.spaces.analysis.mixture_analyzer import MixtureAnalyzer
 from src.spaces.data.activity import RegionActivity
 from src.spaces.data.query import RegionQuery
 from src.spaces.data.region import Region
@@ -17,6 +22,7 @@ from src.spaces.scraper.scraper import RegionScraper
 import pickle
 
 analyzer = ExampleAnalyzer()
+mixed_analyzer = MixtureAnalyzer()
 
 # reading from pickle file
 
@@ -30,9 +36,16 @@ for index in range(0, 8):
         loaded_result = pickle.load(file_to_read)
         final_results.tweets += loaded_result.tweets
         file_to_read.close()
-norm_mu, norm_std = analyzer.train(final_results)
-print(norm_mu, norm_std)
-x = 600
-analyzed_prob = analyzer.analyze(x, norm_mu, norm_std, final_results)
-print(analyzed_prob)
+
+x,y, mu, sigma, hist = mixed_analyzer.train(final_results)
+analyzed= mixed_analyzer.analyze(350, final_results, mu, sigma)
+print(analyzed)
+# plt.show()
+
+# mixed_analyzer.train(final_results)
+# plt.show()
+# analyzer.train(final_results)
+# plt.show()
+
+
 
