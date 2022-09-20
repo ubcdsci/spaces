@@ -1,10 +1,11 @@
+import math
 from abc import ABC
 
 import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import norm
 from sklearn import mixture
-
+from math import e
 
 from src.spaces.analysis.analyzer import TweetAnalyzer
 from src.spaces.data.activity import RegionActivity
@@ -40,31 +41,43 @@ class MixtureAnalyzer(TweetAnalyzer):
             # add tweet to given index
             year_list[days_apart].append(item)
 
-        data= [len(x) for x in year_list]
-        data_array = np.array(data).reshape(-1,1)
+        # creating array & fitting to mixture gaussian
+        data = [len(x) for x in year_list]
+        data_array = np.array(data).reshape(-1, 1)
         mixture_gaussian = mixture.GaussianMixture(n_components=2, covariance_type='full').fit(data_array)
-        x= np.array(np.linspace(0, 8000, 50)).reshape(-1,1)
-        y= mixture_gaussian.score_samples(x)
+        x = np.array(np.linspace(data_array.min(), data_array.max(), 50)).reshape(-1, 1)
+        y = mixture_gaussian.score_samples(x)
         means = mixture_gaussian.means_
         sigma = np.sqrt(mixture_gaussian.covariances_)
 
-        data_hist = plt.hist(data_array, density= True, bins = 7)
-        return x,y, means, sigma, data_hist
+        return x, y, means, sigma, data_array
 
+    # analyzing mixture gaussian to fit into category either inactive or active (activity)
+    def analyze(self, x, result: RegionQueryResult, mu, sd):
+        # classifying values of mean into active or inactive gaussian
+        mu_0 = mu[0][0]
+        mu_1 = mu[1][0]
+        if mu_0 < mu_1:
+            inactive_mu = mu_0
+            active_mu = mu_1
+        else:
+            inactive_mu = mu_1
+            active_mu = mu_0
 
-    def analyze(self,x, result: RegionQueryResult, mu, sd):
-        inactive_mu = mu[0][0]
-        active_mu = mu[1][0]
+        # retrieving standard deviations
         inactive_sd = sd[0][0][0]
         active_sd = sd[1][0][0]
+
+        # probability under inactive or active gaussians to classify activity of value under distribution
         probability_inactive = norm.pdf(x, inactive_mu, inactive_sd)
         probability_active = norm.pdf(x, active_mu, active_sd)
-        return probability_inactive, probability_active
+        if probability_inactive > probability_active:
+            return "inactive"
+        else:
+            return "active"
+
         # Compare to self.activity_hist
         # return RegionActivity(
         #     query=result.query,
         #     activity=random.random()
         # )
-
-
-
