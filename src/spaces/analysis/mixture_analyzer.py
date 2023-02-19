@@ -7,6 +7,8 @@ from scipy.stats import norm
 from sklearn import mixture
 from math import e
 
+from sklearn.svm._libsvm import predict_proba
+
 from src.spaces.analysis.analyzer import TweetAnalyzer
 from src.spaces.data.activity import RegionActivity
 from src.spaces.data.result import RegionQueryResult
